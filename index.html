@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LI ONO NIHA - Chatbot & Penerjemah Bahasa Nias</title>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation & Info -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-comments"></i></div>
+                <div class="brand-text">
+                    <h2>LI ONO NIHA</h2>
+                    <p>Revitalisasi Bahasa Nias</p>
+                </div>
+            </div>
+
+            <div class="project-info-card">
+                <h3><i class="fa-solid fa-users"></i> Proyek Kelompok 3</h3>
+                <p>Aplikasi AI Edukasi & Preservasi Bahasa Nias untuk Mahasiswa, Pemuda, dan Pendatang.</p>
+            </div>
+
+            <div class="dictionary-widget">
+                <h3><i class="fa-solid fa-book-bookmark"></i> Kamus Cepat (Li Niha)</h3>
+                <div class="dict-list">
+                    <div class="dict-item" onclick="insertQuickPrompt('Apa arti Ya\'ahowu?')">
+                        <span class="nias">Ya'ahowu</span>
+                        <span class="indo">Halo / Salam Sejahtera</span>
+                    </div>
+                    <div class="dict-item" onclick="insertQuickPrompt('Bagaimana mengucapkan Terima Kasih dalam Bahasa Nias?')">
+                        <span class="nias">Saohagölö</span>
+                        <span class="indo">Terima Kasih</span>
+                    </div>
+                    <div class="dict-item" onclick="insertQuickPrompt('Apa arti Hewisa duria?')">
+                        <span class="nias">Hewisa duria?</span>
+                        <span class="indo">Apa kabar?</span>
+                    </div>
+                    <div class="dict-item" onclick="insertQuickPrompt('Bagaimana mengucapkan Sampai Jumpa dalam Bahasa Nias?')">
+                        <span class="nias">Yefahu zui</span>
+                        <span class="indo">Sampai jumpa lagi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="api-btn" onclick="openApiKeyModal()">
+                    <i class="fa-solid fa-key"></i> Pengaturan API Key
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <!-- Header -->
+            <header class="chat-header">
+                <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1>Tutor & Penerjemah Li Ono Niha</h1>
+                    <span class="status-badge"><i class="fa-solid fa-circle"></i> AI Aktif</span>
+                </div>
+
+                <!-- Dialek Selector -->
+                <div class="dialect-selector-container">
+                    <label for="dialectSelect"><i class="fa-solid fa-map-location-dot"></i> Dialek:</label>
+                    <select id="dialectSelect" onchange="changeDialect()">
+                        <option value="Nias Umum / Standar (Gunungsitoli)">Nias Umum (Standar)</option>
+                        <option value="Nias Selatan (Fato'ölö / Dialek Teluk Dalam)">Nias Selatan</option>
+                        <option value="Nias Utara (Dialek Pesisir Utara)">Nias Utara</option>
+                        <option value="Nias Barat (Dialek Lahomi / Mandrehe)">Nias Barat</option>
+                    </select>
+                </div>
+
+                <button class="clear-btn" onclick="clearChat()" title="Bersihkan Percakapan">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </header>
+
+            <!-- Chat History -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="message bot-message">
+                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            <strong>Ya'ahowu! 👋</strong><br>
+                            Selamat datang di <strong>LI ONO NIHA Chatbot</strong>. Saya siap membantu kamu belajar, menerjemahkan, dan melatih percakapan Bahasa Nias harian.<br><br>
+                            Ada yang ingin kamu tanyakan atau terjemahkan hari ini?
+                        </div>
+                        <div class="message-actions">
+                            <button onclick="speakText('Ya\'ahowu! Saohagölö')"><i class="fa-solid fa-volume-high"></i> Dengarkan</button>
+                            <button onclick="copyText(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="quick-chips">
+                <button class="chip" onclick="sendQuickPrompt('Terjemahkan ke Bahasa Nias: Saya mau belajar bahasa Nias bersama teman-teman.')">
+                    <i class="fa-solid fa-language"></i> Terjemahkan Kalimat
+                </button>
+                <button class="chip" onclick="sendQuickPrompt('Berikan 5 ungkapan salam sehari-hari dalam Bahasa Nias beserta artinya.')">
+                    <i class="fa-solid fa-handshake"></i> Ungkapan Salam
+                </button>
+                <button class="chip" onclick="sendQuickPrompt('Mari kita percakapan santai perkenalan diri dalam Bahasa Nias.')">
+                    <i class="fa-solid fa-comments"></i> Latihan Obrolan
+                </button>
+            </div>
+
+            <!-- Input Form -->
+            <div class="chat-input-area">
+                <form id="chatForm" onsubmit="handleSendMessage(event)">
+                    <input type="text" id="userInput" placeholder="Ketik pesan atau kalimat Bahasa Indonesia/Nias..." autocomplete="off">
+                    <button type="submit" id="sendBtn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal API Key -->
+    <div class="modal-backdrop" id="apiModal">
+        <div class="modal">
+            <h2><i class="fa-solid fa-key"></i> Pengaturan Gemini API Key</h2>
+            <p>Masukkan API Key dari Google AI Studio untuk menghubungkan chatbot ke layanan Gemini.</p>
+            <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeApiKeyModal()">Batal</button>
+                <button class="btn-primary" onclick="saveApiKey()">Simpan Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/gemini-api.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
